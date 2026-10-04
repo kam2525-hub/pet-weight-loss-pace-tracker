@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>愛犬・愛猫のダイエット目標体重逆算シミュレーター</title>
+    <style>
+        :root {
+            --primary: #FF7B54;
+            --primary-light: #FFF0EB;
+            --secondary: #4E6E5D;
+            --accent: #FFB26B;
+            --bg-color: #F9F8F6;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --text-sub: #777777;
+            --border-radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* ヘッダー */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+        }
+
+        /* カードレイアウト */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* フォーム要素 */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .label-desc {
+            font-weight: normal;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: #FAFAFA;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #FFFFFF;
+        }
+
+        .input-with-unit {
+            position: relative;
+        }
+
+        .input-with-unit input {
+            padding-right: 45px;
+        }
+
+        .input-with-unit .unit {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        /* ラジオボタングループ (ペット種別・避妊去勢など) */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-card {
+            flex: 1;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .radio-card input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-card .radio-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            background: #FAFAFA;
+            transition: var(--transition);
+        }
+
+        .radio-card input:checked + .radio-content {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .radio-card svg {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 5px;
+            fill: currentColor;
+        }
+
+        /* ボディーコンディションスコア（BCS）選択 */
+        .bcs-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .bcs-selector {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .bcs-card {
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            background: #FAFAFA;
+            transition: var(--transition);
+        }
+
+        .bcs-card input {
+            display: none;
+        }
+
+        .bcs-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .bcs-num {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--secondary);
+        }
+
+        .bcs-desc {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        /* 計算ボタン */
+        .btn-calculate {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 123, 84, 0.4);
+            transition: var(--transition);
+        }
+
+        .btn-calculate:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* 結果表示エリア */
+        #result-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .result-box {
+            background: var(--primary-light);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .result-box.highlight {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .result-box.highlight .result-label,
+        .result-box.highlight .result-value {
+            color: white;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .result-value span {
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        /* アドバイス・スケジュール */
+        .advice-box {
+            background: #F4F7F5;
+            border-left: 5px solid var(--secondary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+        }
+
+        .advice-box h4 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .advice-box p {
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        /* フッター */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-sub);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>
+            <!-- 猫のSVGアイコン -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--secondary)"><path d="M12,2C10.5,2 9,2.5 8,3.5C6,2 3,3 2,5C1,7 2,10 4,11C3,13 4,16 6,17C7,19 10,20 12,20C14,20 17,19 18,17C20,16 21,13 20,11C22,10 23,7 22,5C21,3 18,2 16,3.5C15,2.5 13.5,2 12,2Z"/></svg>
+            愛犬・愛猫ダイエット逆算シミュレーター
+        </h1>
+        <p>獣医師と決めた目標体重から、無理のない毎日のごはん量を算出します</p>
+    </header>
+
+    <!-- 入力フォームカード -->
+    <div class="card">
+        <div class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            ペットの情報を入力
+        </div>
+
+        <form id="diet-form">
+            <div class="form-grid">
+                <!-- ペットの種類 -->
+                <div class="form-group full-width">
+                    <label>ペットの種類</label>
+                    <div class="radio-group">
+                        <label class="radio-card">
+                            <input type="radio" name="petType" value="dog" checked onchange="togglePetType()">
+                            <div class="radio-content">
+                                <svg viewBox="0 0 24 24"><path d="M19,4H15C13.89,4 13,4.89 13,6V7H11V6C11,4.89 10.11,4 9,4H5C3.89,4 3,4.89 3,6V10C3,11.11 3.89,12 5,12H6V19C6,20.1 6.9,21 8,21H16C17.1,21 18,20.1 19,19V12H20C21.11,12 22,11.11 22,10V6C22,4.89 21.11,4 20,4H19M7,18H5V13H7V18M11,18H9V13H11V18M15,18H13V13H15V18M19,18H17V13H19V18Z"/></svg>
+                                いぬ（犬）
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="petType" value="cat" onchange="togglePetType()">
+                            <div class="radio-content">
+                                <svg viewBox="0 0 24 24"><path d="M12,2C10.5,2 9,2.5 8,3.5C6,2 3,3 2,5C1,7 2,10 4,11C3,13 4,16 6,17C7,19 10,20 12,20C14,20 17,19 18,17C20,16 21,13 20,11C22,10 23,7 22,5C21,3 18,2 16,3.5C15,2.5 13.5,2 12,2Z"/></svg>
+                                ねこ（猫）
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 現在の体重 -->
+                <div class="form-group">
+                    <label>現在の体重</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="currentWeight" step="0.05" min="0.5" max="100" placeholder="例: 5.4" required>
+                        <span class="unit">kg</span>
+                    </div>
+                </div>
+
+                <!-- 目標体重 -->
+                <div class="form-group">
+                    <label>目標の体重 <span class="label-desc">（獣医師推奨など）</span></label>
+                    <div class="input-with-unit">
+                        <input type="number" id="targetWeight" step="0.05" min="0.5" max="100" placeholder="例: 4.5" required>
+                        <span class="unit">kg</span>
+                    </div>
+                </div>
+
+                <!-- 避妊・去勢 -->
+                <div class="form-group">
+                    <label>避妊・去勢手術</label>
+                    <select id="neutered">
+                        <option value="yes">あり（避妊・去勢済み）</option>
+                        <option value="no">なし（未避妊・未去勢）</option>
+                    </select>
+                </div>
+
+                <!-- フードのカロリー -->
+                <div class="form-group">
+                    <label>与えているフードのカロリー <span class="label-desc">（100gあたり）</span></label>
+                    <div class="input-with-unit">
+                        <input type="number" id="caloriePer100g" step="1" min="100" max="800" placeholder="例: 350" required>
+                        <span class="unit">kcal</span>
+                    </div>
+                </div>
+
+                <!-- ボディ・コンディション・スコア (BCS) -->
+                <div class="form-group full-width">
+                    <label>ボディ・コンディション・スコア (BCS) <span class="label-desc">現在の体型目安 (1:やせ ～ 5:肥満)</span></label>
+                    <div class="bcs-selector">
+                        <label class="bcs-card" onclick="selectBcs(1)">
+                            <input type="radio" name="bcs" value="1">
+                            <div class="bcs-num">1</div>
+                            <div class="bcs-desc">やせ</div>
+                        </label>
+                        <label class="bcs-card" onclick="selectBcs(2)">
+                            <input type="radio" name="bcs" value="2">
+                            <div class="bcs-num">2</div>
+                            <div class="bcs-desc">やややせ</div>
+                        </label>
+                        <label class="bcs-card selected" onclick="selectBcs(3)">
+                            <input type="radio" name="bcs" value="3" checked>
+                            <div class="bcs-num">3</div>
+                            <div class="bcs-desc">理想</div>
+                        </label>
+                        <label class="bcs-card" onclick="selectBcs(4)">
+                            <input type="radio" name="bcs" value="4">
+                            <div class="bcs-num">4</div>
+                            <div class="bcs-desc">やや太め</div>
+                        </label>
+                        <label class="bcs-card" onclick="selectBcs(5)">
+                            <input type="radio" name="bcs" value="5">
+                            <div class="bcs-num">5</div>
+                            <div class="bcs-desc">肥満</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn-calculate" onclick="calculateDiet()">ダイエット計画を計算する</button>
+        </form>
+    </div>
+
+    <!-- 結果表示カード -->
+    <div id="result-section" class="card">
+        <div class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            シミュレーション結果
+        </div>
+
+        <div class="result-grid">
+            <div class="result-box highlight">
+                <div class="result-label">1日あたりのごはん量</div>
+                <div class="result-value" id="res-daily-food">0 <span>g/日</span></div>
+            </div>
+            <div class="result-box">
+                <div class="result-label">目標達成までの目安</div>
+                <div class="result-value" id="res-duration">0 <span>ヶ月</span></div>
+            </div>
+            <div class="result-box">
+                <div class="result-label">1週間あたりの減量ペース</div>
+                <div class="result-value" id="res-weekly-loss">0 <span>g/週</span></div>
+            </div>
+        </div>
+
+        <div class="advice-box">
+            <h4 id="advice-title">無理のないダイエットを</h4>
+            <p id="advice-text">ここにアドバイスが表示されます。</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 愛犬・愛猫ダイエット逆算シミュレーター<br>※このツールは目安です。本格的な減量はかかりつけの動物病院にご相談ください。</p>
+    </footer>
+</div>
+
+<script>
+    // BCSカードの選択状態見た目変更
+    function selectBcs(num) {
+        document.querySelectorAll('.bcs-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        event.currentTarget.classList.add('selected');
+        document.querySelector(`input[name="bcs"][value="${num}"]`).checked = true;
+    }
+
+    // ペット種類切り替え時のデフォルト値調整（任意）
+    function togglePetType() {
+        const petType = document.querySelector('input[name="petType"]:checked').value;
+        const calorieInput = document.getElementById('caloriePer100g');
+        if (petType === 'cat' && (!calorieInput.value || calorieInput.value == '350')) {
+            calorieInput.value = '380';
+        } else if (petType === 'dog' && (!calorieInput.value || calorieInput.value == '380')) {
+            calorieInput.value = '350';
+        }
+    }
+
+    // ローカルストレージの保存
+    function saveToStorage() {
+        const data = {
+            petType: document.querySelector('input[name="petType"]:checked').value,
+            currentWeight: document.getElementById('currentWeight').value,
+            targetWeight: document.getElementById('targetWeight').value,
+            neutered: document.getElementById('neutered').value,
+            caloriePer100g: document.getElementById('caloriePer100g').value,
+            bcs: document.querySelector('input[name="bcs"]:checked').value
+        };
+        localStorage.setItem('petDietData', JSON.stringify(data));
+    }
+
+    // ローカルストレージの読み込み
+    function loadFromStorage() {
+        const saved = localStorage.getItem('petDietData');
+        if (!saved) return;
+        try {
+            const data = JSON.parse(saved);
+            if (data.petType) {
+                document.querySelector(`input[name="petType"][value="${data.petType}"]`).checked = true;
+            }
+            if (data.currentWeight) document.getElementById('currentWeight').value = data.currentWeight;
+            if (data.targetWeight) document.getElementById('targetWeight').value = data.targetWeight;
+            if (data.neutered) document.getElementById('neutered').value = data.neutered;
+            if (data.caloriePer100g) document.getElementById('caloriePer100g').value = data.caloriePer100g;
+            if (data.bcs) {
+                document.querySelector(`input[name="bcs"][value="${data.bcs}"]`).checked = true;
+                document.querySelectorAll('.bcs-card').forEach(card => card.classList.remove('selected'));
+                document.querySelector(`input[name="bcs"][value="${data.bcs}"]`).closest('.bcs-card').classList.add('selected');
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    // 計算ロジック
+    function calculateDiet() {
+        const petType = document.querySelector('input[name="petType"]:checked').value;
+        const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+        const targetWeight = parseFloat(document.getElementById('targetWeight').value);
+        const neutered = document.getElementById('neutered').value === 'yes';
+        const caloriePer100g = parseFloat(document.getElementById('caloriePer100g').value);
+        const bcs = parseInt(document.querySelector('input[name="bcs"]:checked').value);
+
+        // バリデーション
+        if (!currentWeight || !targetWeight || !caloriePer100g) {
+            alert('すべての項目を入力してください。');
+            return;
+        }
+
+        if (targetWeight >= currentWeight) {
+            alert('目標体重は現在の体重より軽い値を設定してください。');
+            return;
+        }
+
+        // 保存実行
+        saveToStorage();
+
+        // 減量係数の決定 (犬猫、避妊去勢、BCSを考慮)
+        // 減量中のRER（静止エネルギー要求量）係数: 減量時は通常 0.8 ~ 1.0 程度をターゲット体重ベースにかけるのが一般的
+        // ここでは目標体重ベースの RER * 減量係数 (犬: 1.0～1.1, 猫: 0.8) を使用
+        
+        let rer = 70 * Math.pow(targetWeight, 0.75);
+        let maintenanceFactor = 1.0;
+
+        if (petType === 'dog') {
+            maintenanceFactor = neutered ? 1.2 : 1.4;
+        } else {
+            maintenanceFactor = neutered ? 1.0 : 1.2;
+        }
+
+        // 減量期は維持エネルギーの約80%〜90%に設定するのが安全
+        // さらにBCSが高い（太っている）場合は少しアグレッシブに、ただし急激な猫の脂肪肝を防ぐため安全マージンをとる
+        let weightLossFactor = 0.85; 
+        if (petType === 'cat') {
+            // 猫の急激な減量は肝リピドーシス（脂肪肝）のリスクがあるため慎重に (安全のため0.8〜0.9)
+            weightLossFactor = 0.85;
+        }
+
+        const targetCalories = rer * maintenanceFactor * weightLossFactor;
+        const dailyFoodGrams = (targetCalories / caloriePer100g) * 100;
+
+        // 減量ペース計算 (安全なペース: 犬は体重の1〜2%/週、猫は0.5〜1%/週)
+        const totalLossKg = currentWeight - targetWeight;
+        const maxWeeklyLossRate = petType === 'dog' ? 0.015 : 0.008; // 週あたりの安全な減少率
+        const weeklyLossKg = currentWeight * maxWeeklyLossRate;
+        
+        const totalWeeks = totalLossKg / weeklyLossKg;
+        const totalMonths = (totalWeeks / 4.345).toFixed(1);
+        const weeklyLossGrams = Math.round(weeklyLossKg * 1000);
+
+        // 結果の描画
+        document.getElementById('res-daily-food').innerHTML = `${Math.round(dailyFoodGrams)} <span>g/日</span>`;
+        document.getElementById('res-duration').innerHTML = `${totalMonths} <span>ヶ月</span>`;
+        document.getElementById('res-weekly-loss').innerHTML = `${weeklyLossGrams} <span>g/週</span>`;
+
+        // アドバイス生成
+        let adviceTitle = "健康的なスローダイエット";
+        let adviceText = "";
+
+        if (petType === 'cat') {
+            adviceText = `猫ちゃんにとって急激な体重減少は「脂肪肝（肝リピドーシス）」という危険な病気を引き起こすおそれがあります。月ごとの目標は現在の体重の2〜3%減を目安に、あせらずゆっくり進めましょう。`;
+        } else {
+            adviceText = `ワンちゃんは1週間あたり体重の1〜2%ずつの減量が理想的です。おやつをあげる場合は、この計算された「1日のごはん量」からおやつの分のカロリーを必ず差し引いてくださいね。`;
+        }
+
+        document.getElementById('advice-title').innerText = adviceTitle;
+        document.getElementById('advice-text').innerText = adviceText;
+
+        // セクション表示
+        const resultSection = document.getElementById('result-section');
+        resultSection.style.display = 'block';
+        resultSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ページロード時に復元
+    window.onload = function() {
+        loadFromStorage();
+    };
+</script>
+
+</body>
+</html>
