@@ -6,31 +6,29 @@
     <title>愛犬・愛猫のダイエット目標体重逆算シミュレーター</title>
     <style>
         :root {
-            --primary: #ff6b81;
-            --primary-light: #ff8e9e;
-            --primary-dark: #e05267;
-            --secondary: #48dbfb;
-            --accent: #ff9f43;
-            --bg-color: #f7f9fc;
-            --card-bg: #ffffff;
-            --text-main: #2d3436;
-            --text-sub: #636e72;
-            --border-color: #dfe6e9;
-            --success: #1dd1a1;
-            --radius: 16px;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --primary: #FF7043;
+            --primary-light: #FFAB91;
+            --primary-dark: #F4511E;
+            --secondary: #4DB6AC;
+            --bg-color: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-main: #37474F;
+            --text-sub: #78909C;
+            --border-radius: 16px;
+            --shadow: 0 10px 25px rgba(0,0,0,0.05);
+            --transition: all 0.3s ease;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
+            color: var(--text-main);
             line-height: 1.6;
             padding: 20px;
         }
@@ -45,34 +43,24 @@
             margin-bottom: 30px;
         }
 
-        .logo-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .icon-svg {
-            width: 48px;
-            height: 48px;
-            fill: var(--primary);
-        }
-
-        h1 {
+        header h1 {
             font-size: 1.8rem;
-            color: var(--text-main);
-            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        p.subtitle {
+        header p {
             color: var(--text-sub);
             font-size: 0.95rem;
         }
 
         .card {
-            background-color: var(--card-bg);
-            border-radius: var(--radius);
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             padding: 30px;
             margin-bottom: 25px;
@@ -84,61 +72,66 @@
 
         label {
             display: block;
-            font-weight: 600;
+            font-weight: bold;
             margin-bottom: 8px;
             font-size: 0.95rem;
         }
 
-        .label-hint {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-            font-weight: normal;
-            margin-left: 5px;
-        }
-
-        .radio-group {
+        .pet-type-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin-bottom: 20px;
         }
 
         .radio-card {
-            border: 2px solid var(--border-color);
+            border: 2px solid #E0E0E0;
             border-radius: 12px;
-            padding: 12px;
+            padding: 15px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            transition: var(--transition);
+            background: #FFF;
         }
 
-        .radio-card input[type="radio"] {
+        .radio-card input {
             display: none;
+        }
+
+        .radio-card svg {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 5px;
+            fill: var(--text-sub);
+            transition: var(--transition);
         }
 
         .radio-card.active {
             border-color: var(--primary);
-            background-color: rgba(255, 107, 129, 0.05);
-            color: var(--primary);
+            background: #FFF3E0;
+            color: var(--primary-dark);
         }
 
-        input[type="number"], select {
+        .radio-card.active svg {
+            fill: var(--primary);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid var(--border-color);
+            border: 2px solid #E0E0E0;
             border-radius: 10px;
             font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-            background: #fff;
+            transition: var(--transition);
+            background: #FAFAFA;
         }
 
-        input[type="number"]:focus, select:focus {
+        input:focus, select:focus {
+            outline: none;
             border-color: var(--primary);
+            background: #FFF;
         }
 
         .input-with-unit {
@@ -151,31 +144,33 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-sub);
-            font-weight: 600;
+            font-weight: bold;
+        }
+
+        .help-text {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-top: 5px;
         }
 
         .btn {
             display: block;
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 12px;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 112, 67, 0.3);
         }
 
         .btn:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-        }
-
-        .btn:active {
-            transform: translateY(1px);
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
         /* 結果表示エリア */
@@ -185,35 +180,40 @@
 
         .result-header {
             text-align: center;
+            border-bottom: 2px dashed #EEEEEE;
+            padding-bottom: 20px;
             margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px dashed var(--border-color);
         }
 
         .result-header h2 {
-            font-size: 1.4rem;
-            color: var(--primary-dark);
+            color: var(--secondary);
+            font-size: 1.5rem;
             margin-bottom: 5px;
         }
 
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 25px;
         }
 
-        .metric-box {
-            background-color: var(--bg-color);
+        .metric-card {
+            background: #F4F6F6;
             border-radius: 12px;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
+        }
+
+        .metric-card.highlight {
+            background: #E0F2F1;
+            border: 2px solid var(--secondary);
         }
 
         .metric-title {
             font-size: 0.85rem;
             color: var(--text-sub);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .metric-value {
@@ -227,87 +227,51 @@
             font-weight: normal;
         }
 
-        .alert-box {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
+        .schedule-box {
+            background: #FFF8E1;
+            border-left: 5px solid #FFC107;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 0 12px 12px 0;
             margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        .alert-box.danger {
-            background-color: #ff8e9e15;
-            border-left-color: var(--primary);
-        }
-
-        .timeline-section {
-            margin-top: 25px;
-        }
-
-        .timeline-title {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .timeline {
-            position: relative;
-            padding-left: 20px;
-            border-left: 2px solid var(--border-color);
-            margin-left: 10px;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -26px;
-            top: 4px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            border: 2px solid #fff;
-        }
-
-        .timeline-date {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-            font-weight: bold;
-        }
-
-        .timeline-content {
             font-size: 0.95rem;
-            font-weight: 600;
         }
 
-        .reset-link {
-            text-align: center;
-            margin-top: 15px;
+        .advice-list {
+            list-style: none;
         }
 
-        .reset-link button {
-            background: none;
-            border: none;
+        .advice-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .advice-list li::before {
+            content: "🐾";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .reset-btn {
+            background: transparent;
             color: var(--text-sub);
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 0.9rem;
+            border: 2px solid #E0E0E0;
+            margin-top: 15px;
+            box-shadow: none;
+        }
+        .reset-btn:hover {
+            background: #EEEEEE;
+            color: var(--text-main);
+            border-color: #EEEEEE;
         }
 
         @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
             .card {
                 padding: 20px;
             }
-            h1 {
+            header h1 {
                 font-size: 1.5rem;
             }
         }
@@ -317,14 +281,11 @@
 
 <div class="container">
     <header>
-        <div class="logo-area">
-            <!-- 猫と犬を合わせたシンプルなSVGアイコン -->
-            <svg class="icon-svg" viewBox="0 0 24 24">
-                <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,4C15.87,4 19,7.13 19,11C19,12.38 18.59,13.67 17.88,14.73C17.43,13.73 16.44,13 15.25,13H14V11C14,9.9 13.1,9 12,9C10.9,9 10,9.9 10,11V13H8.75C7.56,13 6.57,13.73 6.12,14.73C5.41,13.67 5,12.38 5,11C5,7.13 8.13,4 12,4M12,15C13.66,15 15,16.34 15,18C15,19.66 13.66,21 12,21C10.34,21 9,19.66 9,18C9,16.34 10.34,15 12,15Z"/>
-            </svg>
-            <h1>ダイエット目標体重逆算シミュレーター</h1>
-        </div>
-        <p class="subtitle">動物病院の指示に基づく、安全で確実な減量プランを作成します</p>
+        <h1>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--primary)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+            ダイエット目標体重逆算シミュレーター
+        </h1>
+        <p>獣医師の指示に基づく、安全で確実なペットの減量プランを作成します</p>
     </header>
 
     <!-- 入力フォームカード -->
@@ -333,253 +294,251 @@
             <!-- ペットの種類 -->
             <div class="form-group">
                 <label>ペットの種類</label>
-                <div class="radio-group">
+                <div class="pet-type-selector">
                     <label class="radio-card active" id="labelDog">
-                        <input type="radio" name="petType" value="dog" checked> イヌ
+                        <input type="radio" name="petType" value="dog" checked>
+                        <svg viewBox="0 0 24 24"><path d="M19.5 10.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM9 14.5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm3.2-6.7l-1.9-.9c-.5-.2-1.1 0-1.3.5l-.5 1c-1.1-.4-2.4-.4-3.5 0l-.5-1c-.2-.5-.8-.7-1.3-.5l-1.9.9c-.5.2-.7.8-.5 1.3l.5 1C5.7 11.2 4.5 13.5 4.5 16c0 3.3 2.7 6 6 6s6-2.7 6-6c0-2.5-1.2-4.8-3.1-6.1l.5-1c.2-.5 0-1.1-.5-1.3z"/></svg>
+                        <div>いぬ（犬）</div>
                     </label>
                     <label class="radio-card" id="labelCat">
-                        <input type="radio" name="petType" value="cat"> ネコ
+                        <input type="radio" name="petType" value="cat">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-13h-2v2h2V7zm0 4h-2v6h2v-6z"/></svg>
+                        <div>ねこ（猫）</div>
                     </label>
                 </div>
             </div>
 
             <!-- 現在の体重 -->
             <div class="form-group">
-                <label for="currentWeight">現在の体重 <span class="label-hint">現在の実測値</span></label>
+                <label for="currentWeight">現在の体重</label>
                 <div class="input-with-unit">
-                    <input type="number" id="currentWeight" step="0.05" min="0.5" max="100" placeholder="例: 5.4" required>
+                    <input type="number" id="currentWeight" step="0.05" min="0.1" required placeholder="例: 5.5">
                     <span>kg</span>
                 </div>
             </div>
 
             <!-- 目標の体重 -->
             <div class="form-group">
-                <label for="targetWeight">目標の体重 <span class="label-hint">病院で指示された体重</span></label>
+                <label for="targetWeight">目標の体重（動物病院の指示など）</label>
                 <div class="input-with-unit">
-                    <input type="number" id="targetWeight" step="0.05" min="0.5" max="100" placeholder="例: 4.5" required>
+                    <input type="number" id="targetWeight" step="0.05" min="0.1" required placeholder="例: 4.5">
                     <span>kg</span>
                 </div>
+                <div class="help-text">※現在の体重より軽い値を入力してください</div>
             </div>
 
-            <!-- 避妊・去勢の有無 -->
+            <!-- 避妊・去勢状態 -->
             <div class="form-group">
-                <label for="neuterStatus">避妊・去勢手術</label>
+                <label for="neuterStatus">避妊・去勢の状態</label>
                 <select id="neuterStatus">
-                    <option value="yes">あり（避妊・去勢済み）</option>
-                    <option value="no">なし（未避妊・未去勢）</option>
+                    <option value="neuter">避妊・去勢済み（太りやすい傾向）</option>
+                    <option value="intact">未避妊・未去勢</option>
                 </select>
             </div>
 
-            <!-- ご飯のカロリー -->
+            <!-- 活動量・体質 -->
             <div class="form-group">
-                <label for="foodKcal">現在のフードのカロリー <span class="label-hint">100gあたり</span></label>
-                <div class="input-with-unit">
-                    <input type="number" id="foodKcal" step="1" min="200" max="600" placeholder="例: 350" required>
-                    <span>kcal / 100g</span>
-                </div>
+                <label for="activityLevel">普段の活動量</label>
+                <select id="activityLevel">
+                    <option value="low">少ない（室内中心・あまり動かない）</option>
+                    <option value="normal" selected>普通（一般的なお散歩・遊び）</option>
+                    <option value="high">多い（よく運動する・活発）</option>
+                </select>
             </div>
 
-            <button type="submit" class="btn">減量プランを計算する</button>
+            <!-- フードのカロリー -->
+            <div class="form-group">
+                <label for="caloriePer100g">現在あげているフードのカロリー</label>
+                <div class="input-with-unit">
+                    <input type="number" id="caloriePer100g" step="1" min="1" required placeholder="例: 350">
+                    <span>kcal / 100g</span>
+                </div>
+                <div class="help-text">※フードのパッケージ裏面に記載されています</div>
+            </div>
+
+            <button type="submit" class="btn">シミュレーションを実行する</button>
         </form>
     </div>
 
     <!-- 結果表示カード -->
     <div class="card" id="resultArea">
         <div class="result-header">
-            <h2>診断結果・減量プラン</h2>
-            <p id="resultSubtitle" class="subtitle">無理なく健康的に痩せるためのロードマップです</p>
-        </div>
-
-        <div id="safetyAlert" class="alert-box">
-            <!-- 警告メッセージが動的に入ります -->
+            <h2>ダイエット計画の算出結果</h2>
+            <p id="petSummaryText">無理のないペースで健康的に減量しましょう</p>
         </div>
 
         <div class="metrics-grid">
-            <div class="metric-box">
-                <div class="metric-title">目標までの過剰体重</div>
-                <div class="metric-value" id="excessWeight">-</div>
+            <div class="metric-card">
+                <div class="metric-title">減量必要な体重</div>
+                <div class="metric-value" id="resWeightLoss">- <span>kg</span></div>
             </div>
-            <div class="metric-box">
-                <div class="metric-title">推奨される毎日の食事量</div>
-                <div class="metric-value" id="dailyFood">-</div>
+            <div class="metric-card highlight">
+                <div class="metric-title">1日の目標給餌量</div>
+                <div class="metric-value" id="resDailyFood">- <span>g / 日</span></div>
             </div>
-            <div class="metric-box">
-                <div class="metric-title">目標達成の目安期間</div>
-                <div class="metric-value" id="estimatedWeeks">-</div>
-            </div>
-            <div class="metric-box">
-                <div class="metric-title">減量中の1日あたりカロリー</div>
-                <div class="metric-value" id="targetKcal">-</div>
+            <div class="metric-card">
+                <div class="metric-title">ダイエット達成の目安</div>
+                <div class="metric-value" id="resDuration">- <span>ヶ月</span></div>
             </div>
         </div>
 
-        <div class="timeline-section">
-            <div class="timeline-title">体重測定スケジュール目安</div>
-            <div class="timeline" id="timelineList">
-                <!-- タイムラインが動的に入ります -->
-            </div>
+        <div class="schedule-box" id="scheduleAdvice">
+            <!-- 動的メッセージ -->
         </div>
 
-        <div class="reset-link">
-            <button id="recalcBtn">← 条件を変更して再計算する</button>
-        </div>
+        <h3 style="font-size: 1.05rem; margin-bottom: 10px;">💡 ダイエット成功のポイント</h3>
+        <ul class="advice-list">
+            <li>おやつをあげる場合は、上記の1日分のフードから「おやつ分」のカロリーを差し引いてください。</li>
+            <li>急激な食事制限は脂肪肝などのリスク（特に猫）があるため、必ずこのペースを守りましょう。</li>
+            <li>2週間〜1ヶ月に一度は体重を測り、減りすぎていないか・停滞していないか確認しましょう。</li>
+        </ul>
+
+        <button type="button" class="btn reset-btn" id="resetBtn">条件を変更して再計算する</button>
     </div>
 </div>
 
+<div style="text-align: center; margin-top: 20px; color: var(--text-sub); font-size: 0.8rem;">
+    ※本ツールの計算結果は目安です。正確な指導は必ずかかりつけの動物病院の指示に従ってください。
+</div>
+
 <script>
-    // ラジオボタンのUI切り替え制御
-    const radioCards = document.querySelectorAll('.radio-card');
-    radioCards.forEach(card => {
-        card.addEventListener('click', () => {
-            radioCards.forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            const radio = card.querySelector('input[type="radio"]');
-            radio.checked = true;
+    document.addEventListener('DOMContentLoaded', () => {
+        const petTypeRadios = document.querySelectorAll('input[name="petType"]');
+        const labelDog = document.getElementById('labelDog');
+        const labelCat = document.getElementById('labelCat');
+        
+        const dietForm = document.getElementById('dietForm');
+        const inputCard = document.getElementById('inputCard');
+        const resultArea = document.getElementById('resultArea');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // ラジオボタンの見た目切り替え
+        petTypeRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'dog') {
+                    labelDog.classList.add('active');
+                    labelCat.classList.remove('active');
+                } else {
+                    labelCat.classList.add('active');
+                    labelDog.classList.remove('active');
+                }
+            });
         });
-    });
 
-    // フォーム要素
-    const dietForm = document.getElementById('dietForm');
-    const inputCard = document.getElementById('inputCard');
-    const resultArea = document.getElementById('resultArea');
-    const recalcBtn = document.getElementById('recalcBtn');
-
-    // ローカルストレージキー
-    const STORAGE_KEY = 'pet_diet_simulator_data_v1';
-
-    // ページロード時に保存データを復元
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedData = localStorage.getItem(STORAGE_KEY);
+        // LocalStorageからのデータ復元
+        const savedData = localStorage.getItem('petDietData');
         if (savedData) {
             try {
                 const data = JSON.parse(savedData);
                 document.querySelector(`input[name="petType"][value="${data.petType}"]`).checked = true;
-                radioCards.forEach(c => c.classList.remove('active'));
-                document.querySelector(`input[name="petType"][value="${data.petType}"]`).closest('.radio-card').classList.add('active');
-                
-                document.getElementById('currentWeight').value = data.currentWeight;
-                document.getElementById('targetWeight').value = data.targetWeight;
-                document.getElementById('neuterStatus').value = data.neuterStatus;
-                document.getElementById('foodKcal').value = data.foodKcal;
-
-                // 自動で計算を実行
-                calculateDiet(data);
+                if (data.petType === 'dog') {
+                    labelDog.classList.add('active');
+                    labelCat.classList.remove('active');
+                } else {
+                    labelCat.classList.add('active');
+                    labelDog.classList.remove('active');
+                }
+                document.getElementById('currentWeight').value = data.currentWeight || '';
+                document.getElementById('targetWeight').value = data.targetWeight || '';
+                document.getElementById('neuterStatus').value = data.neuterStatus || 'neuter';
+                document.getElementById('activityLevel').value = data.activityLevel || 'normal';
+                document.getElementById('caloriePer100g').value = data.caloriePer100g || '';
             } catch (e) {
                 console.error('Failed to load saved data', e);
             }
         }
-    });
 
-    // フォーム送信時
-    dietForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+        // フォーム送信時の計算処理
+        dietForm.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-        const formData = {
-            petType: document.querySelector('input[name="petType"]:checked').value,
-            currentWeight: parseFloat(document.getElementById('currentWeight').value),
-            targetWeight: parseFloat(document.getElementById('targetWeight').value),
-            neuterStatus: document.getElementById('neuterStatus').value,
-            foodKcal: parseFloat(document.getElementById('foodKcal').value)
-        };
+            const petType = document.querySelector('input[name="petType"]:checked').value;
+            const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+            const targetWeight = parseFloat(document.getElementById('targetWeight').value);
+            const neuterStatus = document.getElementById('neuterStatus').value;
+            const activityLevel = document.getElementById('activityLevel').value;
+            const caloriePer100g = parseFloat(document.getElementById('caloriePer100g').value);
 
-        // バリデーション
-        if (formData.currentWeight <= formData.targetWeight) {
-            alert('目標体重は現在の体重よりも軽い値を設定してください。');
-            return;
-        }
+            // バリデーション
+            if (currentWeight <= targetWeight) {
+                alert('目標の体重は現在の体重よりも軽い値を設定してください。');
+                return;
+            }
 
-        // 保存
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+            // データの保存 (LocalStorage)
+            const formData = { petType, currentWeight, targetWeight, neuterStatus, activityLevel, caloriePer100g };
+            localStorage.setItem('petDietData', JSON.stringify(formData));
 
-        // 計算実行
-        calculateDiet(formData);
-    });
+            // --- 計算ロジック ---
+            const weightLossTotal = currentWeight - targetWeight; // 減量すべき総量
 
-    // 再計算ボタン
-    recalcBtn.addEventListener('click', () => {
-        resultArea.style.display = 'none';
-        inputCard.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // 計算ロジック
-    function calculateDiet(data) {
-        const excess = data.currentWeight - data.targetWeight; // 減らすべき体重 (kg)
-        
-        // 安全な減量ペース: 猫・犬ともに週に体重の0.5%〜1.0%程度が安全。
-        // ここでは安全のため週に 0.8% 減を基準とする
-        const weeklyLossRate = 0.008; 
-        const weeklyLossKg = data.currentWeight * weeklyLossRate;
-        const totalWeeks = Math.ceil(excess / weeklyLossKg);
-        const totalMonths = (totalWeeks / 4.3).toFixed(1);
-
-        // 基礎代謝量 (RER) の計算: 70 * (目標体重kg)^0.75
-        // 減量期は「目標体重ベース」または「現在の体重の少し下」でRERを計算するのが安全だが、
-        // 一般的な減量期RER係数を使用。減量中の係数は犬:1.0〜1.2、猫:0.8〜1.0程度
-        let rer = 70 * Math.pow(data.targetWeight, 0.75);
-        
-        let maintenanceFactor = 1.2; // 避妊去勢済みの標準
-        if (data.petType === 'dog') {
-            maintenanceFactor = data.neuterStatus === 'yes' ? 1.6 : 1.8;
-        } else {
-            maintenanceFactor = data.neuterStatus === 'yes' ? 1.2 : 1.4;
-        }
-
-        // 維持カロリー
-        const maintenanceKcal = rer * maintenanceFactor;
-
-        // 減量カロリー（維持カロリーの80%程度、または目標体重のRER×係数）
-        // 安全かつ確実な減量のため、目標体重に対するRER × 減量係数(犬1.0 / 猫0.8)を採用
-        let dietKcalFactor = data.petType === 'dog' ? 1.0 : 0.8;
-        let targetDailyKcal = rer * dietKcalFactor;
-
-        // あまりにも少なすぎる場合の安全装置（RERを下回る極端な絶食系ダイエットを防ぐ）
-        if (targetDailyKcal < rer * 0.8) {
-            targetDailyKcal = rer * 0.8;
-        }
-
-        // 1日のごはんのグラム数
-        const dailyFoodGrams = (targetDailyKcal / data.foodKcal) * 100;
-
-        // 画面反映
-        document.getElementById('excessWeight').innerHTML = `${excess.toFixed(2)} <span>kg</span>`;
-        document.getElementById('dailyFood').innerHTML = `${Math.round(dailyFoodGrams)} <span>g / 日</span>`;
-        document.getElementById('estimatedWeeks').innerHTML = `${totalWeeks} <span>週 (約${totalMonths}ヶ月)</span>`;
-        document.getElementById('targetKcal').innerHTML = `${Math.round(targetDailyKcal)} <span>kcal / 日</span>`;
-
-        // アラートメッセージの作成
-        const alertBox = document.getElementById('safetyAlert');
-        if (excess / data.currentWeight > 0.3) {
-            alertBox.className = 'alert-box danger';
-            alertBox.innerHTML = '<strong>【注意】</strong> 減量割合が現在の体重の30%を超えています。急激なダイエットは肝リピドーシス（猫）や体調不良を引き起こすリスクがあるため、必ずかかりつけの動物病院の指導のもとで進めてください。';
-        } else {
-            alertBox.className = 'alert-box';
-            alertBox.innerHTML = '<strong>【安全なペース】</strong> このプランは週に約0.8%の緩やかなペースで減量します。おやつを与える場合は、上記のフード量からおやつのカロリー分を必ず差し引いてください。';
-        }
-
-        // タイムライン生成
-        const timelineList = document.getElementById('timelineList');
-        timelineList.innerHTML = '';
-
-        const steps = 4;
-        for (let i = 1; i <= steps; i++) {
-            const stepWeeks = Math.round((totalWeeks / steps) * i);
-            const expectedWeight = Math.max(data.targetWeight, data.currentWeight - (weeklyLossKg * (totalWeeks / steps) * i));
+            // 係数算出（RERおよびDER）
+            // 減量期は「現在の体重」ではなく「理想(目標)体重」ベース、あるいは「減量用係数」を現在の体重にかけるアプローチをとる
+            // 一般的な動物病院の減量計算では、減量期目標RER = 70 * (目標体重)^0.75 に、減量係数(犬:1.0, 猫:0.8など)をかける
+            // ここでは安全かつ現実的な目標体重ベースのDER（減量用）を計算する
             
-            const item = document.createElement('div');
-            item.className = 'timeline-item';
-            item.innerHTML = `
-                <div class="timeline-date">経過目安: 約 ${stepWeeks} 週間後</div>
-                <div class="timeline-content">目標体重: ${expectedWeight.toFixed(2)} kg 頃</div>
-            `;
-            timelineList.appendChild(item);
-        }
+            let derMultiplier = 1.0;
+            if (petType === 'dog') {
+                if (neuterStatus === 'neuter') derMultiplier = 1.0; // 減量犬
+                else derMultiplier = 1.2;
+                
+                if (activityLevel === 'low') derMultiplier *= 0.9;
+                if (activityLevel === 'high') derMultiplier *= 1.1;
+            } else {
+                // 猫
+                if (neuterStatus === 'neuter') derMultiplier = 0.8; // 減量猫
+                else derMultiplier = 1.0;
 
-        // 画面切り替え
-        inputCard.style.display = 'none';
-        resultArea.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+                if (activityLevel === 'low') derMultiplier *= 0.9;
+                if (activityLevel === 'high') derMultiplier *= 1.1;
+            }
+
+            // 基礎代謝量 (RER) = 70 * (目標体重)^0.75
+            const targetRER = 70 * Math.pow(targetWeight, 0.75);
+            const dailyCalories = targetRER * derMultiplier;
+
+            // 1日の給餌量 (g) = 1日の必要カロリー / (100gあたりカロリー / 100)
+            const dailyFoodGram = (dailyCalories / caloriePer100g) * 100;
+
+            // 減量ペースの計算
+            // 安全な減量ペース：犬は週に1%〜2%、猫は週に0.5%〜1%程度
+            // ここでは安全に月全体で体重の 3% 〜 5% 減らすペースを想定
+            // 週あたりの減少率：犬 1.25%, 猫 0.75% と仮定
+            const weeklyLossRate = (petType === 'dog') ? 0.0125 : 0.0075;
+            
+            // 1週間あたりの減量グラム数
+            const weeklyLossKg = currentWeight * weeklyLossRate;
+            
+            // 必要な期間（週数）
+            const totalWeeks = weightLossTotal / weeklyLossKg;
+            const totalMonths = (totalWeeks / 4.33).toFixed(1);
+
+            // --- 結果の描画 ---
+            document.getElementById('resWeightLoss').innerHTML = `${weightLossTotal.toFixed(2)} <span>kg</span>`;
+            document.getElementById('resDailyFood').innerHTML = `${Math.round(dailyFoodGram)} <span>g / 日</span>`;
+            document.getElementById('resDuration').innerHTML = `${totalMonths} <span>ヶ月 (約${Math.ceil(totalWeeks)}週間)</span>`;
+
+            const animalName = petType === 'dog' ? 'ワンちゃん' : 'ネコちゃん';
+            document.getElementById('petSummaryText').textContent = `${animalName}の健康的なダイエット計画（${currentWeight}kg ⇒ ${targetWeight}kg）`;
+
+            document.getElementById('scheduleAdvice').innerHTML = `
+                <strong>📅 ペースの目安:</strong> 1週間あたり約 <strong>${(weeklyLossKg * 1000).toFixed(0)}g</strong> の減量を目指します。<br>
+                無理なくリバウンドしにくい安全なペースで、約 <strong>${totalMonths}ヶ月</strong> での目標達成を計画しています。
+            `;
+
+            // 画面切り替え
+            inputCard.style.display = 'none';
+            resultArea.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // リセットボタン
+        resetBtn.addEventListener('click', () => {
+            resultArea.style.display = 'none';
+            inputCard.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
 </script>
 
 </body>
